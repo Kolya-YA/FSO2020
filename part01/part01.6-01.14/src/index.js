@@ -1,29 +1,63 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Hello = (props) => {
-  const bornYear = () => {
-    const yearNow = new Date().getFullYear()
-    return yearNow - props.age
-  }
+const Statistics = ({ feedbacks }) => {
+  const all = feedbacks.good + feedbacks.neutral + feedbacks.bad
+  const avrg = (feedbacks.good - feedbacks.bad) / all
+  const positive = feedbacks.good / all * 100
 
-  return (
-    <div>
-      <p>Hello {props.name}, you are {props.age} years old</p>
-  <p>So you were probably born in {bornYear()}</p>
-    </div>
-  )
+  if (all) {
+    return (
+      <table>
+        <tbody>
+          <Statistic text='Good' data={feedbacks.good} />
+          <Statistic text='Neutral' data={feedbacks.good} />
+          <Statistic text='Bad' data={feedbacks.good} />
+          <Statistic text='All' data={all} />
+          <Statistic text='Average' data={avrg} />
+          <Statistic text='Positive' data={positive} />
+        </tbody>
+      </table>
+    )
+  } else {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }  
 }
 
+const Statistic = ({ text, data }) => (
+<tr>
+  <td>{text}</td>
+  <td>{data}{text === 'Positive' && '%'}</td>
+</tr>
+)
+
+const Button = ({ onClick, text }) => (
+  <button onClick={onClick}>{text}</button>
+)
+
 const App = () => {
-  const name = 'Peter'
-  const age = 10
+  const [feedbacks, setFeedbacks] = useState({
+    good: 0, neutral: 0, bad: 0
+  })
+
+const handleFeddbackClick = (kind) => {
+  return () => setFeedbacks({...feedbacks, [kind]: feedbacks[kind] + 1})
+}
 
   return (
     <div>
-      <h1>Greetings</h1>
-      <Hello name="Maya" age={26 + 10} />
-      <Hello name={name} age={age} />
+      <div>
+        <h1>Give feedback</h1>
+        <Button onClick={handleFeddbackClick('good')} text='Good'/>
+        <Button onClick={handleFeddbackClick('neutral')} text='Neutral' />
+        <Button onClick={handleFeddbackClick('bad')} text='Bad' />
+        <h2>Statistics</h2>
+        <Statistics feedbacks={feedbacks} />
+      </div>
     </div>
   )
 }
