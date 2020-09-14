@@ -44,9 +44,9 @@ const App = () => {
     good: 0, neutral: 0, bad: 0
   })
 
-const handleFeddbackClick = (kind) => {
-  return () => setFeedbacks({...feedbacks, [kind]: feedbacks[kind] + 1})
-}
+  const handleFeddbackClick = (kind) => {
+    return () => setFeedbacks({...feedbacks, [kind]: feedbacks[kind] + 1})
+  }
 
   return (
     <div>
