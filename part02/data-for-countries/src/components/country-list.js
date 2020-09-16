@@ -21,7 +21,7 @@ const CountriesList = ({ countriesList, setFilter }) => (
 const CountryList = ({ countries, setFilter }) => {
   return (
     <div>
-      {countries.length > 1000
+      {countries.length > 10
         ? <h3>{countries.length} countries is too many, specify another filter.</h3>
         : <CountriesList countriesList={countries} setFilter={setFilter} />
       }
