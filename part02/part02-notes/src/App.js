@@ -42,8 +42,6 @@ const App = (props) => {
         alert(`The note '${note.content}' was already deleted from server.`)
         setNotes(notes.filter(note => note.id !== id))
       })
-
-    console.log("Toggle: ", id)
   }
 
   const handleNoteChange = (event) => {

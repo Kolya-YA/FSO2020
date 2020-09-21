@@ -11,14 +11,12 @@ const newRecord = newPerson => {
   return req.then(response => response.data)
 }
 
-const updateRecord = (updatedPerson) => {
-  const req = axios.put(`${serverURL}/${updatedPerson.id}`, updatedPerson)
+const updateRecord = (updatedPerson, id) => {
+  console.log(updatedPerson, id)
+  const req = axios.put(`${serverURL}/${id}`, updatedPerson)
   return req.then(response => response.data)
 }
 
-const delRecord = delPerson => {
-  const req = axios.delete(serverURL, delPerson)
-  return req.then(response => response.data)
-}
+const delRecord = id => axios.delete(`${serverURL}/${id}`)
 
 export default { getFullBook, newRecord, updateRecord, delRecord }

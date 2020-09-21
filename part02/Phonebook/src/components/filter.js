@@ -8,11 +8,13 @@ const Filter = ({ filter, setFilter}) => {
 
   return (
     <form>
-      <input 
-        type='text'
-        value={filter}
-        onChange={filterHandler}
-      />
+      <label>Filter 
+        <input 
+          type='text'
+          value={filter}
+          onChange={filterHandler}
+        />
+      </label>
     </form>
   )
 }

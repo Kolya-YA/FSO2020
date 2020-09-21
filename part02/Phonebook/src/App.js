@@ -18,20 +18,42 @@ const App = () => {
 
   const addNewPerson = (event) => {
     event.preventDefault()
-    const notNewPerson = persons.some(person => person.name === newName)
-    if (notNewPerson) alert(`${newName} is already added to phonebook`)
-    else {
-      const newPerson = {
-        name: newName,
-        number: newPhone
-      }
-      bookService.newRecord(newPerson)
-        .then(response => setPersons(persons.concat(response)))
-        .catch(err => alert(err))      
+    const existPerson = persons.find(person => person.name === newName)
+    
+    if (existPerson && !window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) return
+    
+    const newPerson = {
+      name: newName,
+      number: newPhone
     }
+    
+    if (existPerson) {
+      bookService.updateRecord(newPerson, existPerson.id)
+        .then(response => {
+          setPersons(persons.map(p => p.id !== response.id ? p : response))
+        })
+        .catch(err => alert(err))
+    } else {
+      bookService.newRecord(newPerson)
+      .then(response => setPersons(persons.concat(response)))
+      .catch(err => alert(err))      
+    }
+    
     setNewName('')
     setNewPhone('')
     setFilter('')
+  }
+
+  const delPerson = person => {
+    if (window.confirm(`Delete ${person.name}?`)) {      
+      if (person.id < 5) {
+        alert("Imposible!") // VIP persons!
+        return
+      }
+      bookService.delRecord(person.id)
+        .then(setPersons(persons.filter(p => p.id !== person.id)))
+        .catch(err => alert(err))
+    }
   }
 
   const handleNewName = (event) => {
@@ -56,7 +78,11 @@ const App = () => {
         handleNewName={handleNewName}
         handleNewPhone={handleNewPhone}
       />
-      <PersonsList persons={persons} filter={personFilter}/>
+      <PersonsList
+        persons={persons}
+        filter={personFilter}
+        delPerson={delPerson}
+      />
     </div>
   )
 }
