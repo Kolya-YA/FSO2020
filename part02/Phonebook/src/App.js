@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Filter from './components/filter'
 import PersonsList from './components/persons-list'
 import AddPersonForm from './components/add-person-form'
+import Notification from './components/notofication'
 import bookService from './services/bookService'
 
 const App = () => {
@@ -9,12 +10,18 @@ const App = () => {
   const [ personFilter, setFilter ] = useState('')
   const [ newName, setNewName ] = useState('')
   const [ newPhone, setNewPhone ] = useState('')
+  const [ topMessage, setTopMessage ] = useState({err: 1, msg: 'test'})
 
   useEffect(() => {
     bookService.getFullBook()
       .then(response => setPersons(response))
       .catch(err => alert(err))
   }, [])
+
+  const setMessage = (msg, err=0, timeout=5000) => {
+    setTopMessage({msg, err})
+    setTimeout(() => setTopMessage({msg: '', err: 0}), timeout)
+  }
 
   const addNewPerson = (event) => {
     event.preventDefault()
@@ -26,7 +33,7 @@ const App = () => {
       name: newName,
       number: newPhone
     }
-    
+
     if (existPerson) {
       bookService.updateRecord(newPerson, existPerson.id)
         .then(response => {
@@ -35,7 +42,10 @@ const App = () => {
         .catch(err => alert(err))
     } else {
       bookService.newRecord(newPerson)
-      .then(response => setPersons(persons.concat(response)))
+      .then(response => {
+        setMessage(`Added ${response.name}.`)
+        setPersons(persons.concat(response))}
+      )
       .catch(err => alert(err))      
     }
     
@@ -67,6 +77,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification msg={topMessage.msg} error={topMessage.error} />
       <Filter
         filter={personFilter}
         setFilter={setFilter}
