@@ -10,7 +10,7 @@ const App = () => {
   const [ personFilter, setFilter ] = useState('')
   const [ newName, setNewName ] = useState('')
   const [ newPhone, setNewPhone ] = useState('')
-  const [ topMessage, setTopMessage ] = useState({err: 1, msg: 'test'})
+  const [ topMessage, setTopMessage ] = useState({error: 1, msg: 'test'})
 
   useEffect(() => {
     bookService.getFullBook()
@@ -18,9 +18,9 @@ const App = () => {
       .catch(err => alert(err))
   }, [])
 
-  const setMessage = (msg, err=0, timeout=5000) => {
-    setTopMessage({msg, err})
-    setTimeout(() => setTopMessage({msg: '', err: 0}), timeout)
+  const setMessage = (msg, error=0, timeout=5000) => {
+    setTopMessage({msg, error})
+    setTimeout(() => setTopMessage({msg: '', error: 0}), timeout)
   }
 
   const addNewPerson = (event) => {
@@ -39,7 +39,7 @@ const App = () => {
         .then(response => {
           setPersons(persons.map(p => p.id !== response.id ? p : response))
         })
-        .catch(err => alert(err))
+        .catch(() => setMessage(`Information of ${newPerson.name} has already removed from server.`, 1, 10000))
     } else {
       bookService.newRecord(newPerson)
       .then(response => {
@@ -77,7 +77,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification msg={topMessage.msg} error={topMessage.error} />
+      <Notification msg={topMessage.msg} err={topMessage.error} />
       <Filter
         filter={personFilter}
         setFilter={setFilter}
