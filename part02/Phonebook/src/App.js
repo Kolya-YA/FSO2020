@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Filter from './components/filter'
-import axios from 'axios'
 import PersonsList from './components/persons-list'
-import PersonForm from './components/person-form'
+import AddPersonForm from './components/add-person-form'
+import bookService from './services/bookService'
 
 const App = () => {
   const [ persons, setPersons ] = useState([]) 
@@ -10,15 +10,11 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newPhone, setNewPhone ] = useState('')
 
-  const jsonPersonsHook = () => {
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      setPersons(response.data)
-    })
-  }
-
-  useEffect(jsonPersonsHook, [])
+  useEffect(() => {
+    bookService.getFullBook()
+      .then(response => setPersons(response))
+      .catch(err => alert(err))
+  }, [])
 
   const addNewPerson = (event) => {
     event.preventDefault()
@@ -27,9 +23,11 @@ const App = () => {
     else {
       const newPerson = {
         name: newName,
-        phone: newPhone
+        number: newPhone
       }
-      setPersons(persons.concat(newPerson))
+      bookService.newRecord(newPerson)
+        .then(response => setPersons(persons.concat(response)))
+        .catch(err => alert(err))      
     }
     setNewName('')
     setNewPhone('')
@@ -51,15 +49,13 @@ const App = () => {
         filter={personFilter}
         setFilter={setFilter}
       />
-      <h3>Add a new person</h3>
-      <PersonForm
+      <AddPersonForm
         newName={newName}
         newPhone={newPhone}
         addNewPerson={addNewPerson}
         handleNewName={handleNewName}
         handleNewPhone={handleNewPhone}
       />
-      <h3>Numbers</h3>
       <PersonsList persons={persons} filter={personFilter}/>
     </div>
   )

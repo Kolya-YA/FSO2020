@@ -6,11 +6,17 @@ const PersonsList = ({ persons, filter }) => {
     : persons
 
   return (
+    <>
+    <h3>Numbers</h3>
     <ul>
       {personsToShow.map(person => (
-      <li key={person.name}>{person.name} {person.phone}</li>
+        <li key={person.name}>
+          {person.name} — {person.number} 
+          <button onClick={null}>Del</button>
+        </li>
       ))}
     </ul>
+    </>
   )
 }
 
